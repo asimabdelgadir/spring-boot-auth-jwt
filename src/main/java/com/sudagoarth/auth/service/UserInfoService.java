@@ -21,7 +21,6 @@ public class UserInfoService implements UserDetailsService {
     @Autowired
     private PasswordEncoder encoder;
 
-
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -40,7 +39,6 @@ public class UserInfoService implements UserDetailsService {
             return true;
         }
     }
-
 
     public UserInfo getUser(String username) {
         return repository.findByEmail(username).orElse(null);
@@ -74,6 +72,5 @@ public class UserInfoService implements UserDetailsService {
             return false;
         }
     }
-
 
 }

@@ -7,6 +7,7 @@ import com.sudagoarth.auth.JwtService;
 import com.sudagoarth.auth.entity.UserInfo;
 import com.sudagoarth.auth.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -63,16 +64,16 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ApiResponseWithToken authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.username(), authRequest.password()));
         if (authentication.isAuthenticated()) {
             String username = authentication.getName();
             UserInfo user = service.getUserWithoutPassword(username);
             String token = jwtService.generateToken(username);
-
-            return new ApiResponseWithToken(true, "Token generated successfully", user, token);
+            return ResponseEntity.ok( new ApiResponseWithToken(true, "Token generated successfully", user, token));
+//            return new ApiResponseWithToken(true, "Token generated successfully", user, token);
         } else {
-            throw new UsernameNotFoundException("Invalid username or password");
+            return ResponseEntity.ok(new ApiResponse(false, "Invalid username or password", null));
         }
     }
 
